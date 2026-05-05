@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sudoku 4x4</title>
+
+<style>
+body {
+  font-family: Arial;
+  text-align: center;
+  background: #f0f4f8;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 60px);
+  gap: 5px;
+  justify-content: center;
+  margin: 20px;
+}
+
+input {
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  font-size: 20px;
+}
+
+.fixed {
+  background: #ddd;
+}
+
+button {
+  padding: 10px 20px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🧩 Mini Sudoku (4x4)</h2>
+<p>Fill numbers 1–4. No repeats in any row or column.</p>
+
+<div class="grid" id="grid"></div>
+
+<button onclick="checkSudoku()">Check Answer</button>
+<p id="result"></p>
+
+<script>
+const puzzle = [
+  [1, 0, 0, 4],
+  [0, 4, 1, 0],
+  [0, 1, 0, 3],
+  [4, 0, 2, 0]
+];
+
+const grid = document.getElementById("grid");
+
+// generate grid
+for (let r = 0; r < 4; r++) {
+  for (let c = 0; c < 4; c++) {
+    let input = document.createElement("input");
+
+    if (puzzle[r][c] !== 0) {
+      input.value = puzzle[r][c];
+      input.disabled = true;
+      input.classList.add("fixed");
+    }
+
+    input.dataset.row = r;
+    input.dataset.col = c;
+
+    grid.appendChild(input);
+  }
+}
+
+// check sudoku
+function checkSudoku() {
+  const inputs = document.querySelectorAll("input");
+
+  let board = Array(4).fill().map(() => Array(4).fill(0));
+
+  inputs.forEach(input => {
+    let r = input.dataset.row;
+    let c = input.dataset.col;
+    board[r][c] = input.value;
+  });
+
+  // check rows
+  for (let r = 0; r < 4; r++) {
+    let set = new Set(board[r]);
+    if (set.size !== 4 || set.has("")) {
+      document.getElementById("result").innerText = "❌ Row error!";
+      return;
+    }
+  }
+
+  // check columns
+  for (let c = 0; c < 4; c++) {
+    let col = [];
+    for (let r = 0; r < 4; r++) {
+      col.push(board[r][c]);
+    }
+    let set = new Set(col);
+    if (set.size !== 4 || set.has("")) {
+      document.getElementById("result").innerText = "❌ Column error!";
+      return;
+    }
+  }
+
+  document.getElementById("result").innerText = "✅ Correct! 🎉";
+}
+</script>
+
+</body>
+</html>
